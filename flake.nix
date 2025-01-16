@@ -39,7 +39,7 @@
 
       webServer = lib.mkOption {
         type = lib.types.nullOr (lib.types.submodule webServerSubmodule);
-        description = "If set, generates a NixOS configuration with an http server";
+        description = "Whether to create an HTTP server based on this Haskell project";
         default = null;
       };
 
