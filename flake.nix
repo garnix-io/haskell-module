@@ -86,7 +86,12 @@
           }
         ) config.haskell;
 
-        nixosConfigurations.default =
+        nixosConfigurations = let
+          hasAnyWebServer =
+            builtins.any (projectConfig: projectConfig.webServer != null)
+            (builtins.attrValues config.haskell);
+        in lib.mkIf hasAnyWebServer {
+          default =
           # Global nixos configuration
           [{
             services.nginx = {
@@ -123,7 +128,7 @@
 
             services.nginx.virtualHosts.default.locations.${projectConfig.webServer.path}.proxyPass = "http://localhost:${toString projectConfig.webServer.port}";
           }) config.haskell));
-      };
+      };};
     };
   };
 }
