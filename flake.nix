@@ -28,7 +28,7 @@
       src = lib.mkOption {
         type = lib.types.path;
         description = "A path to the directory containing your cabal or hpack file";
-        example = ./.;
+        example = "./.";
       };
 
       ghcVersion = lib.mkOption {
