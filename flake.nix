@@ -34,7 +34,7 @@
       ghcVersion = lib.mkOption {
         type = lib.types.enum ["9.10" "9.8" "9.6" "9.4" "9.2" "9.0"];
         description = "The major GHC version to use";
-        default = "9.10";
+        default = "9.8";
       };
 
       webServer = lib.mkOption {
