@@ -73,7 +73,7 @@
       };
 
       config =
-      rec {
+      {
         packages = builtins.mapAttrs (name: projectConfig:
           pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".callCabal2nix
             "haskell-${name}"
@@ -82,7 +82,12 @@
 
         devShells = builtins.mapAttrs (name: projectConfig:
           pkgs.mkShell {
-             inputsFrom = [ (packages.${name}.callCabal2nix "haskell-${name}" ./. { }).env ];
+             inputsFrom = [
+               (pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".callCabal2nix
+                 "haskell-${name}"
+                 projectConfig.src
+                 { }
+               ).env ];
           }
         ) config.haskell;
 
