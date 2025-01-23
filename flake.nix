@@ -81,13 +81,17 @@
         ) config.haskell;
 
         devShells = builtins.mapAttrs (name: projectConfig:
+          let haskellPackages = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}";
+          in
           pkgs.mkShell {
-             inputsFrom = [
-               (pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".callCabal2nix
-                 "haskell-${name}"
-                 projectConfig.src
-                 { }
-               ).env ];
+            inputsFrom =
+              [
+                (haskellPackages.callCabal2nix "haskell-${name}" projectConfig.src { }).env
+              ];
+            buildInputs = [
+              haskellPackages.cabal-install
+              haskellPackages.hpack
+            ];
           }
         ) config.haskell;
 
