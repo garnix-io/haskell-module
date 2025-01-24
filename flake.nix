@@ -9,7 +9,7 @@
         type = lib.types.nonEmptyStr;
         description = "The command to run to start the server in production.";
         example = "server --port 7000";
-      };
+      } // { name = "server command"; };
 
       port = lib.mkOption {
         type = lib.types.port;
@@ -21,7 +21,7 @@
         type = lib.types.nonEmptyStr;
         description = "URL path your haskell server will be hosted on.";
         default = "/";
-      };
+      } // { name = "api path"; };
     };
 
     haskellSubmodule.options = {
@@ -29,13 +29,13 @@
         type = lib.types.path;
         description = "A path to the directory containing your cabal or hpack (`package.yaml`) file.";
         example = "./.";
-      };
+      } // { name = "source directory"; };
 
       ghcVersion = lib.mkOption {
         type = lib.types.enum ["9.10" "9.8" "9.6" "9.4" "9.2" "9.0"];
         description = "The major GHC version to use.";
         default = "9.8";
-      };
+      } // { name = "GHC version"; };
 
       webServer = lib.mkOption {
         type = lib.types.nullOr (lib.types.submodule webServerSubmodule);
@@ -47,7 +47,7 @@
         type = lib.types.listOf lib.types.package;
         description = "A list of packages make available in the devshell for this project (and `default` devshell). This is useful for things like LSPs, formatters, etc.";
         default = [];
-      };
+      } // { name = "development tools"; };
 
       buildDependencies = lib.mkOption {
         type = lib.types.listOf lib.types.package;
