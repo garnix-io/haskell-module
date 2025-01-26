@@ -22,7 +22,7 @@
         type = lib.types.nonEmptyStr;
         description = "URL path your haskell server will be hosted on.";
         default = "/";
-      } // { name = "api path"; };
+      } // { name = "API path"; };
     };
 
     haskellSubmodule.options = {
