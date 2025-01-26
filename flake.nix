@@ -15,6 +15,7 @@
         type = lib.types.port;
         description = "Port to forward incoming http requests to. This port has to be opened by the server command.";
         example = 7000;
+        default = 7000;
       };
 
       path = lib.mkOption {
