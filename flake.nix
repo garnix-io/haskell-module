@@ -7,39 +7,39 @@
     webServerSubmodule.options = {
       command = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        description = "The command to run to start the server in production";
+        description = "The command to run to start the server in production.";
         example = "server --port 7000";
-      };
+      } // { name = "server command"; };
 
       port = lib.mkOption {
         type = lib.types.port;
-        description = "Port to forward incoming http requests to";
+        description = "Port to forward incoming http requests to. This port has to be opened by the server command.";
         example = 7000;
       };
 
       path = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        description = "URL path to host your haskell server on";
+        description = "URL path your haskell server will be hosted on.";
         default = "/";
-      };
+      } // { name = "api path"; };
     };
 
     haskellSubmodule.options = {
       src = lib.mkOption {
         type = lib.types.path;
-        description = "A path to the directory containing your cabal or hpack file";
+        description = "A path to the directory containing your cabal or hpack (`package.yaml`) file.";
         example = "./.";
-      };
+      } // { name = "source directory"; };
 
       ghcVersion = lib.mkOption {
         type = lib.types.enum ["9.10" "9.8" "9.6" "9.4" "9.2" "9.0"];
-        description = "The major GHC version to use";
+        description = "The major GHC version to use.";
         default = "9.8";
-      };
+      } // { name = "GHC version"; };
 
       webServer = lib.mkOption {
         type = lib.types.nullOr (lib.types.submodule webServerSubmodule);
-        description = "Whether to create an HTTP server based on this Haskell project";
+        description = "Whether to create an HTTP server based on this Haskell project.";
         default = null;
       };
 
@@ -47,17 +47,17 @@
         type = lib.types.listOf lib.types.package;
         description = "A list of packages make available in the devshell for this project (and `default` devshell). This is useful for things like LSPs, formatters, etc.";
         default = [];
-      };
+      } // { name = "development tools"; };
 
       buildDependencies = lib.mkOption {
         type = lib.types.listOf lib.types.package;
-        description = "A list of dependencies required to build this package. They are made available in the devshell, and at build time";
+        description = "A list of dependencies required to build this package. They are made available in the devshell, and at build time.";
         default = [];
       };
 
       runtimeDependencies = lib.mkOption {
         type = lib.types.listOf lib.types.package;
-        description = "A list of dependencies required at runtime. They are made available in the devshell, at build time, and are available on the server at runtime";
+        description = "A list of dependencies required at runtime. They are made available in the devshell, at build time, and are available on the server at runtime.";
         default = [];
       };
     };
@@ -68,7 +68,7 @@
       options = {
         haskell = lib.mkOption {
           type = lib.types.attrsOf (lib.types.submodule haskellSubmodule);
-          description = "An attrset of Haskell projects to generate";
+          description = "An attrset of Haskell projects to generate.";
         };
       };
 
