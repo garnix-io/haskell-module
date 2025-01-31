@@ -1,7 +1,7 @@
 {
   description = ''A garnix module for projects using Haskell.
 
-  Add dependencies, pick the GHC version, and optionally run your app as a Web Server.
+  Add dependencies, pick the GHC version, and optionally deploy a web server.
 
   [Documentation](https://garnix.io/docs/modules/haskell) - [Source](https://github.com/garnix-io/haskell-module).
   '';
