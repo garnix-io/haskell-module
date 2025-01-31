@@ -1,7 +1,9 @@
 {
   description = ''A garnix module for projects using Haskell.
 
-  See the [module documentation](https://garnix.io/docs/modules/haskell) or the [module repo](https://github.com/garnix-io/haskell-module) additional info.
+  Add dependencies, pick the GHC version, and optionally run your app as a Web Server.
+
+  [Documentation](https://garnix.io/docs/modules/haskell) - [Source](https://github.com/garnix-io/haskell-module).
   '';
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
   outputs = { self, nixpkgs }:
