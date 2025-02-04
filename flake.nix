@@ -21,7 +21,7 @@
 
         port = lib.mkOption {
           type = lib.types.port;
-          description = "Port to forward incoming http requests to. This port has to be opened by the server command.";
+          description = "Port to forward incoming HTTP requests to. This port has to be opened by the server command.";
           example = 7000;
           default = 7000;
         };
@@ -29,7 +29,7 @@
         path = lib.mkOption
           {
             type = lib.types.nonEmptyStr;
-            description = "URL path your haskell server will be hosted on.";
+            description = "URL path your Haskell server will be hosted on.";
             default = "/";
           } // { name = "API path"; };
       };
@@ -142,7 +142,7 @@
                         environment.systemPackages = projectConfig.runtimeDependencies;
 
                         systemd.services.${name} = {
-                          description = "${name} haskell garnix module";
+                          description = "${name} Haskell garnix module";
                           wantedBy = [ "multi-user.target" ];
                           after = [ "network-online.target" ];
                           wants = [ "network-online.target" ];
