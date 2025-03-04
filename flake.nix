@@ -6,11 +6,9 @@
 
     [Documentation](https://garnix.io/docs/modules/haskell) - [Source](https://github.com/garnix-io/haskell-module).
   '';
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-  outputs = { self, nixpkgs }:
+  outputs = { self }: {
+    garnixModules.default = { pkgs, lib, config, ... }:
     let
-      lib = nixpkgs.lib;
-
       webServerSubmodule.options = {
         command = lib.mkOption
           {
@@ -74,11 +72,10 @@
           default = [ ];
         };
       };
+
+      ghcStr = ghc: "ghc${builtins.replaceStrings ["."] [""] ghc}";
     in
     {
-      garnixModules.default = { pkgs, config, ... }:
-        let ghcStr = ghc: "ghc${builtins.replaceStrings ["."] [""] ghc}";
-        in {
           options = {
             haskell = lib.mkOption {
               type = lib.types.attrsOf (lib.types.submodule haskellSubmodule);
