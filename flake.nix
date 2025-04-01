@@ -117,26 +117,23 @@
             };
           };
 
-          config = {
+          config =
+          {
             packages = builtins.mapAttrs (
               name: projectConfig:
-              pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".callCabal2nix "haskell-${name}"
+              let ghc = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}";
+              in (ghc.callCabal2nix "haskell-${name}"
                 projectConfig.src
-                { }
+                { }) // { ghc = ghc; }
             ) config.haskell;
 
             devShells = builtins.mapAttrs (
-              name: projectConfig:
-              let
-                haskellPackages = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}";
-              in
+              name: pkg:
               pkgs.mkShell {
-                inputsFrom = [
-                  (haskellPackages.callCabal2nix "haskell-${name}" projectConfig.src { }).env
-                ];
+                inputsFrom = [ pkg.env ];
                 buildInputs = [
-                  haskellPackages.cabal-install
-                  haskellPackages.hpack
+                  pkg.ghc.cabal-install
+                  pkg.ghc.hpack
                 ];
               }
             ) config.haskell;
