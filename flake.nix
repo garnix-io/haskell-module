@@ -6,8 +6,17 @@
 
     [Documentation](https://garnix.io/docs/modules/haskell) - [Source](https://github.com/garnix-io/haskell-module).
   '';
+  inputs = {
+    get-flake.url = "github:ursi/get-flake";
+    garnix-lib.url = "github:garnix-io/garnix-lib";
+    cradle = {
+      url = "github:garnix-io/cradle";
+      flake = false;
+    };
+  };
+
   outputs =
-    { self }:
+    inputs@{ self, get-flake, ... }:
     {
       garnixModules.default =
         {
@@ -44,6 +53,29 @@
               // {
                 name = "API path";
               };
+          };
+
+          haskellPackageSubmodule.options = {
+            name = lib.mkOption {
+              type = lib.type.string;
+              description = "The package name (as it appears in the cabal file).";
+            };
+            enableTests = lib.mkOption {
+              type = lib.types.bool;
+              description = "Whether to run the tests for this package. Disable this if the tests are failing.";
+              default = true;
+            };
+            origin = lib.mkOption {
+              type = lib.types.attrTag {
+                "Nixpkgs" = {};
+                "Hackage" = {
+                  description = "The version number (e.g. 5.2.1)";
+                  type = lib.types.nonEmptyStr;
+                };
+              };
+              description = "Where to get the package from.";
+              default = { "Nixpkgs" = {}; };
+            };
           };
 
           haskellSubmodule.options = {
@@ -105,6 +137,12 @@
               description = "A list of dependencies required at runtime. They are made available in the devshell, at build time, and are available on the server at runtime.";
               default = [ ];
             };
+
+            haskellPackageOverrides = lib.mkOption {
+              type = lib.types.listOf (lib.types.submodule haskellPackageSubmodule);
+              description = "A list of overrides for Haskell packages. Use this to pick different versions, disable tests, and fetch from version control.";
+              default = [];
+            };
           };
 
           ghcStr = ghc: "ghc${builtins.replaceStrings [ "." ] [ "" ] ghc}";
@@ -117,26 +155,33 @@
             };
           };
 
-          config = {
+          config =
+          {
             packages = builtins.mapAttrs (
               name: projectConfig:
-              pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".callCabal2nix "haskell-${name}"
+              let
+                  overrideOne = final: prev: arg:
+                    let pkg =
+                      if arg.type ? "Nixpkgs"
+                      then prev."${name}"
+                      else final.callHackage arg.name arg.Hackage.version {};
+                    in if arg.enableTests then pkg else pkgs.haskell.lib.dontCheck pkg;
+                  overrides = final: prev: lib.lists.fold
+                    (new: acc: acc // overrideOne final prev new)
+                    {} projectConfig.haskellPackageOverrides;
+                  ghc = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".override { inherit overrides; };
+              in (ghc.callCabal2nix "haskell-${name}"
                 projectConfig.src
-                { }
+                { }) // { ghc = ghc; }
             ) config.haskell;
 
             devShells = builtins.mapAttrs (
-              name: projectConfig:
-              let
-                haskellPackages = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}";
-              in
+              name: pkg:
               pkgs.mkShell {
-                inputsFrom = [
-                  (haskellPackages.callCabal2nix "haskell-${name}" projectConfig.src { }).env
-                ];
+                inputsFrom = [ pkg.env ];
                 buildInputs = [
-                  haskellPackages.cabal-install
-                  haskellPackages.hpack
+                  pkg.ghc.cabal-install
+                  pkg.ghc.hpack
                 ];
               }
             ) config.haskell;
@@ -199,5 +244,5 @@
               };
           };
         };
-    };
+    } // ((import ./tests/cradle/flake.nix).outputs inputs);
 }
