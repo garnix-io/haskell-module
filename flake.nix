@@ -6,8 +6,17 @@
 
     [Documentation](https://garnix.io/docs/modules/haskell) - [Source](https://github.com/garnix-io/haskell-module).
   '';
+  inputs = {
+    get-flake.url = "github:ursi/get-flake";
+    garnix-lib.url = "github:garnix-io/garnix-lib";
+    cradle = {
+      url = "github:garnix-io/cradle";
+      flake = false;
+    };
+  };
+
   outputs =
-    { self }:
+    inputs@{ self, get-flake, ... }:
     {
       garnixModules.default =
         {
@@ -158,9 +167,9 @@
                       else final.callHackage arg.name arg.Hackage.version {};
                     in if arg.enableTests then pkg else pkgs.haskell.lib.dontCheck pkg;
                   overrides = final: prev: lib.lists.fold
-                    (new: acc: acc / overrideOne final prev new)
+                    (new: acc: acc // overrideOne final prev new)
                     {} projectConfig.haskellPackageOverrides;
-                  ghc = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".overide overrides;
+                  ghc = pkgs.haskell.packages."${ghcStr projectConfig.ghcVersion}".override { inherit overrides; };
               in (ghc.callCabal2nix "haskell-${name}"
                 projectConfig.src
                 { }) // { ghc = ghc; }
@@ -235,5 +244,5 @@
               };
           };
         };
-    };
+    } // ((import ./tests/cradle/flake.nix).outputs inputs);
 }

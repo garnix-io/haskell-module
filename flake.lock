@@ -1,6 +1,77 @@
 {
   "nodes": {
-    "root": {}
+    "cradle": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1717164253,
+        "narHash": "sha256-OiQnrWO78bsM23Gt7rWEoGh0Zeg5CDv+OiraKskjgd8=",
+        "owner": "garnix-io",
+        "repo": "cradle",
+        "rev": "dbad639f4ba132f336588b85089cd1dc0acad4ea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "garnix-io",
+        "repo": "cradle",
+        "type": "github"
+      }
+    },
+    "garnix-lib": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1741124098,
+        "narHash": "sha256-IKw06PRrM6JCixYA9dqtAGpJh2rVyIn9/1O7cBAHqZ4=",
+        "owner": "garnix-io",
+        "repo": "garnix-lib",
+        "rev": "9544aae735c7f54b82585a661d1595a9e1ae3ccf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "garnix-io",
+        "repo": "garnix-lib",
+        "type": "github"
+      }
+    },
+    "get-flake": {
+      "locked": {
+        "lastModified": 1714237590,
+        "narHash": "sha256-9gtHdGbzFHaR20xORN8IYd67ROWS+1nqQ5CsPf9MD8I=",
+        "owner": "ursi",
+        "repo": "get-flake",
+        "rev": "a6c57417d1b857b8be53aba4095869a0f438c502",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ursi",
+        "repo": "get-flake",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1737569578,
+        "narHash": "sha256-6qY0pk2QmUtBT9Mywdvif0i/CLVgpCjMUn6g9vB+f3M=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "47addd76727f42d351590c905d9d1905ca895b82",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-24.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "cradle": "cradle",
+        "garnix-lib": "garnix-lib",
+        "get-flake": "get-flake"
+      }
+    }
   },
   "root": "root",
   "version": 7
